@@ -45,7 +45,7 @@ public class TradeService {
             totalUsdtAmount = executionPrice.multiply(qty);
 
             if (usdtWallet.getBalance().compareTo(totalUsdtAmount) < 0) {
-                return "Transaction failed: Insufficient USDT balance!";
+                throw new IllegalArgumentException( "Transaction failed: Insufficient USDT balance!");
             }
 
             usdtWallet.setBalance(usdtWallet.getBalance().subtract(totalUsdtAmount));
@@ -55,7 +55,7 @@ public class TradeService {
             executionPrice = currentPrice.getBestBid();
             
             if (cryptoWallet.getBalance().compareTo(qty) < 0) {
-                return "Transaction failed: Insufficient balance " + cryptoCurrency + "!";
+                throw new IllegalArgumentException("Transaction failed: Insufficient balance " + cryptoCurrency + "!");
             }
 
             totalUsdtAmount = executionPrice.multiply(qty);

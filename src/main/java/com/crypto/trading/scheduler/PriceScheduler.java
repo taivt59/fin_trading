@@ -27,7 +27,7 @@ public class PriceScheduler {
     public void fetchAndAggregatePrices() {
         updateBestPrice("BTCUSDT");
         updateBestPrice("ETHUSDT");
-        System.out.println("--- Đã cập nhật giá tốt nhất lúc: " + LocalDateTime.now());
+        System.out.println("--- Updated price at: " + LocalDateTime.now());
     }
 
     private void updateBestPrice(String symbol) {
