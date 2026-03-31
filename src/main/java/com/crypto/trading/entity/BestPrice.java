@@ -12,7 +12,7 @@ import lombok.Data;
 public class BestPrice {
     @Id
     private String symbol; // ETHUSDT, BTCUSDT
-    private BigDecimal bestBid; // Cho SELL
-    private BigDecimal bestAsk; // Cho BUY
+    private BigDecimal bestBid; // For SELL
+    private BigDecimal bestAsk; // For BUY
     private LocalDateTime updatedAt;
 }

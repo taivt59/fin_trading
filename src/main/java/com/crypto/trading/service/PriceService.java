@@ -18,25 +18,19 @@ public class PriceService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Scheduled(fixedRate = 10000) // 10 giây một lần
+    @Scheduled(fixedRate = 10000)
     public void aggregatePrices() {
         updateBestPrice("BTCUSDT");
         updateBestPrice("ETHUSDT");
     }
 
     private void updateBestPrice(String symbol) {
-        // Giả sử logic call API và so sánh (Simplified)
-        // Binance: https://api.binance.com/api/v3/ticker/bookTicker?symbol=BTCUSDT
-        // Huobi: https://api.huobi.pro/market/tickers
         
-        // Logic: 
-        // Best Ask = Min(Binance Ask, Huobi Ask) -> Dùng để Mua
-        // Best Bid = Max(Binance Bid, Huobi Bid) -> Dùng để Bán
         
         BestPrice price = new BestPrice();
         price.setSymbol(symbol);
-        price.setBestAsk(new BigDecimal("50000.00")); // Giá mẫu
-        price.setBestBid(new BigDecimal("49990.00")); // Giá mẫu
+        price.setBestAsk(new BigDecimal("50000.00"));
+        price.setBestBid(new BigDecimal("49990.00"));
         price.setUpdatedAt(LocalDateTime.now());
         repository.save(price);
     }

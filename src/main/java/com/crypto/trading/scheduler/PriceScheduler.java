@@ -23,7 +23,7 @@ public class PriceScheduler {
     private final String BINANCE_URL = "https://api.binance.com/api/v3/ticker/bookTicker?symbol=";
     private final String HUOBI_URL = "https://api.huobi.pro/market/tickers";
 
-    @Scheduled(fixedRate = 10000) // Chạy mỗi 10 giây
+    @Scheduled(fixedRate = 10000)
     public void fetchAndAggregatePrices() {
         updateBestPrice("BTCUSDT");
         updateBestPrice("ETHUSDT");
@@ -32,10 +32,8 @@ public class PriceScheduler {
 
     private void updateBestPrice(String symbol) {
         try {
-            // 1. Lấy giá từ Binance
             BinanceTicker binance = restTemplate.getForObject(BINANCE_URL + symbol, BinanceTicker.class);
             
-            // 2. Lấy giá từ Huobi (Huobi trả về list, cần filter đúng symbol)
             HuobiResponse huobiRes = restTemplate.getForObject(HUOBI_URL, HuobiResponse.class);
             HuobiTicker huobi = huobiRes.getData().stream()
                     .filter(t -> t.getSymbol().equalsIgnoreCase(symbol))
@@ -45,14 +43,9 @@ public class PriceScheduler {
                 BigDecimal bPriceBid = new BigDecimal(binance.getBidPrice());
                 BigDecimal bPriceAsk = new BigDecimal(binance.getAskPrice());
                 
-                // SO SÁNH ĐỂ TÌM GIÁ TỐT NHẤT (Aggregated Price)
-                // - MUA (ASK): Chọn giá THẤP NHẤT giữa 2 sàn để tiết kiệm tiền cho User.
-                // - BÁN (BID): Chọn giá CAO NHẤT giữa 2 sàn để User lời nhiều nhất.
-                
                 BigDecimal bestAsk = bPriceAsk.min(huobi.getAsk());
                 BigDecimal bestBid = bPriceBid.max(huobi.getBid());
 
-                // 3. Lưu vào Database
                 BestPrice bestPrice = new BestPrice();
                 bestPrice.setSymbol(symbol);
                 bestPrice.setBestAsk(bestAsk);
@@ -62,7 +55,7 @@ public class PriceScheduler {
                 priceRepository.save(bestPrice);
             }
         } catch (Exception e) {
-            System.err.println("Lỗi khi lấy giá cho " + symbol + ": " + e.getMessage());
+            System.err.println("An error occur when fetching price for " + symbol + ": " + e.getMessage());
         }
     }
 }
